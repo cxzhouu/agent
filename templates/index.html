@@ -1,10 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1 class="text-4xl font-semibold text-appleText">欢迎来到智能体课堂平台</h1>
-    <p class="mt-4 text-lg text-appleSub">在这里，你可以创建学生智能体，进行与英雄的对话，甚至是多英雄的交流。</p>
-    <div class="mt-6">
-        <a href="/students" class="inline-block bg-appleBlue text-white py-2 px-4 rounded-full">创建学生智能体</a>
-        <a href="/sessions" class="inline-block ml-4 bg-appleBlue text-white py-2 px-4 rounded-full">管理会话</a>
-    </div>
+    <section class="card p-8">
+        <h1 class="page-title">欢迎来到智能体课堂平台</h1>
+        <p class="page-subtitle">创建学生智能体，与英雄展开深度对话，并通过教师总结获得更明确的成长方向。</p>
+
+        <div class="mt-6 flex flex-wrap gap-3">
+            <a href="/students" class="btn-primary">创建学生智能体</a>
+            <a href="/sessions" class="btn-secondary">管理会话</a>
+            <a href="/heroes" class="btn-secondary">查看英雄资料</a>
+        </div>
+    </section>
 {% endblock %}

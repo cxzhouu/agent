@@ -1,14 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1 class="text-3xl font-semibold mb-4 text-appleText">会话管理</h1>
-    <ul class="space-y-4">
-        {% for session in sessions %}
-            <li>
-                <a href="/sessions/{{ session.session_id }}" class="inline-block bg-appleBlue text-white py-2 px-4 rounded-full">
-                    会话 ID: {{ session.session_id }} - {{ session.session_type }}
-                </a>
-            </li>
-        {% endfor %}
-    </ul>
+    <h1 class="page-title mb-4">会话管理</h1>
+
+    {% if sessions %}
+        <ul class="list-reset stack">
+            {% for session in sessions %}
+                <li class="card p-4">
+                    <a href="/sessions/{{ session.session_id }}" class="text-blue-700 font-semibold hover:underline">
+                        会话 ID: {{ session.session_id }}
+                    </a>
+                    <p class="muted mt-1">类型：{{ session.session_type }}｜轮次：{{ session.round_count }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="card p-5 muted">当前还没有会话记录。</div>
+    {% endif %}
 {% endblock %}

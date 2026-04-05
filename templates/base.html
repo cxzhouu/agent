@@ -5,17 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>智能体课堂平台</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
 </head>
-<body class="bg-appleBg text-appleText">
-    <nav class="bg-appleBlue p-4 text-white">
-        <ul class="flex space-x-4">
-            <li><a href="/" class="hover:underline">首页</a></li>
-            <li><a href="/students" class="hover:underline">学生管理</a></li>
-            <li><a href="/sessions" class="hover:underline">会话管理</a></li>
-        </ul>
+<body>
+    <nav class="top-nav">
+        <div class="top-nav__inner">
+            <span class="brand">智能体课堂平台</span>
+            <ul class="flex items-center gap-2 list-reset">
+                <li><a href="/">首页</a></li>
+                <li><a href="/students">学生管理</a></li>
+                <li><a href="/heroes">英雄列表</a></li>
+                <li><a href="/sessions">会话管理</a></li>
+            </ul>
+        </div>
     </nav>
-    <div class="container mx-auto mt-8">
+
+    <main class="app-shell">
         {% block content %}{% endblock %}
-    </div>
+    </main>
 </body>
 </html>
