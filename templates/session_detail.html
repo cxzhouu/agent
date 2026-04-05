@@ -10,8 +10,21 @@
         {% for round in session.rounds %}
             <div class="rounded-lg border p-4 bg-white">
                 <p><strong>学生提问：</strong>{{ round.student_question }}</p>
-                <p><strong>英雄回答：</strong>{{ round.hero_answer }}</p>
-                <p><strong>老师总结：</strong>{{ round.teacher_summary }}</p>
+
+                {% if round.hero_rounds %}
+                    <div class="mt-3 space-y-3">
+                        {% for hero_round in round.hero_rounds %}
+                            <div class="border rounded p-3 bg-gray-50">
+                                <p><strong>英雄：</strong>{{ hero_round.hero_name }}</p>
+                                <p><strong>英雄回答：</strong>{{ hero_round.hero_answer }}</p>
+                                <p><strong>老师总结：</strong>{{ hero_round.teacher_summary }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p><strong>英雄回答：</strong>{{ round.hero_answer }}</p>
+                    <p><strong>老师总结：</strong>{{ round.teacher_summary }}</p>
+                {% endif %}
             </div>
         {% endfor %}
     </div>

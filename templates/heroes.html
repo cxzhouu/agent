@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 class="text-3xl font-semibold mb-4 text-appleText">英雄列表</h1>
+
+    <ul class="space-y-3">
+        {% for hero in heroes %}
+            <li class="rounded-lg border p-4 bg-white">
+                <p><strong>人物：</strong>{{ hero.name }}</p>
+                <p class="text-sm text-gray-600"><strong>文档 ID：</strong>{{ hero.doc_id }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

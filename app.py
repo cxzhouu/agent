@@ -1,12 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
-from flask import Response
-import json
 from pathlib import Path
+
 from services.student_service import StudentService
 from services.hero_service import HeroService
 from services.dialogue_service import DialogueService
 from services.session_store import SessionStore
-from schemas.dto import CreateStudentRequest, CreateSingleSessionRequest, CreateMultiSessionRequest
 
 # 初始化服务
 app = Flask(__name__)
@@ -34,28 +32,33 @@ def list_students():
 def create_student():
     if request.method == "POST":
         student_data = request.form
+
+        def lines(field_name: str):
+            raw = student_data.get(field_name, "")
+            return raw.split("\n") if raw else []
+
         payload = {
-            "name": student_data["name"],
-            "grade": student_data["grade"],
-            "major": student_data["major"],
-            "identity": student_data["identity"],
-            "self_view": student_data["self_view"],
-            "personality_traits": student_data["personality_traits"].split("\n"),
-            "speaking_style": student_data["speaking_style"].split("\n"),
-            "interests": student_data["interests"].split("\n"),
-            "strengths": student_data["strengths"].split("\n"),
-            "weaknesses": student_data["weaknesses"].split("\n"),
-            "current_stage": student_data["current_stage"],
-            "learning_goals": student_data["learning_goals"].split("\n"),
-            "current_confusions": student_data["current_confusions"].split("\n"),
-            "concerns": student_data["concerns"].split("\n"),
-            "values": student_data["values"].split("\n"),
-            "expectations": student_data["expectations"],
-            "common_questions": student_data["common_questions"].split("\n"),
-            "response_preference": student_data["response_preference"].split("\n"),
-            "opening_intro": student_data["opening_intro"],
-            "opening_problem": student_data["opening_problem"],
-            "opening_expectation": student_data["opening_expectation"],
+            "name": student_data.get("name", ""),
+            "grade": student_data.get("grade", ""),
+            "major": student_data.get("major", ""),
+            "identity": student_data.get("identity", ""),
+            "self_view": student_data.get("self_view", ""),
+            "personality_traits": lines("personality_traits"),
+            "speaking_style": lines("speaking_style"),
+            "interests": lines("interests"),
+            "strengths": lines("strengths"),
+            "weaknesses": lines("weaknesses"),
+            "current_stage": student_data.get("current_stage", ""),
+            "learning_goals": lines("learning_goals"),
+            "current_confusions": lines("current_confusions"),
+            "concerns": lines("concerns"),
+            "values": lines("values"),
+            "expectations": student_data.get("expectations", ""),
+            "common_questions": lines("common_questions"),
+            "response_preference": lines("response_preference"),
+            "opening_intro": student_data.get("opening_intro", ""),
+            "opening_problem": student_data.get("opening_problem", ""),
+            "opening_expectation": student_data.get("opening_expectation", ""),
         }
 
         student_service.create_student(payload)

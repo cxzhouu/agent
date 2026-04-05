@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="flex items-center justify-between mb-4">
+        <h1 class="text-3xl font-semibold text-appleText">学生管理</h1>
+        <a href="/students/create" class="inline-block bg-appleBlue text-white py-2 px-4 rounded-full">新建学生</a>
+    </div>
+
+    {% if students %}
+        <ul class="space-y-3">
+            {% for student in students %}
+                <li class="rounded-lg border p-4 bg-white">
+                    <p><strong>学生文档 ID：</strong>{{ student.doc_id }}</p>
+                    <p class="text-sm text-gray-600 break-all"><strong>文件：</strong>{{ student.file }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-gray-600">暂时还没有学生档案，点击右上角“新建学生”开始创建。</p>
+    {% endif %}
+{% endblock %}

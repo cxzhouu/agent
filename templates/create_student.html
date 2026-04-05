@@ -20,7 +20,24 @@
 
         <label class="block text-appleText">
             <span class="text-lg">当前身份</span>
-            <input type="text" name="identity" required class="mt-1 p-2 border rounded-md w-full" placeholder="请输入当前身份">
+            <input type="text" name="identity" class="mt-1 p-2 border rounded-md w-full" placeholder="请输入当前身份">
+        </label>
+
+        <label class="block text-appleText">
+            <span class="text-lg">自我认知</span>
+            <textarea name="self_view" class="mt-1 p-2 border rounded-md w-full" rows="2" placeholder="比如：执行力强，但常常方向不清"></textarea>
+        </label>
+
+        <label class="block text-appleText">
+            <span class="text-lg">当前学习困惑（每行一条）</span>
+            <textarea name="current_confusions" class="mt-1 p-2 border rounded-md w-full" rows="3" placeholder="例如：
+不知道如何把专业能力转化为实际价值
+时间管理困难"></textarea>
+        </label>
+
+        <label class="block text-appleText">
+            <span class="text-lg">希望得到的启发</span>
+            <textarea name="opening_expectation" class="mt-1 p-2 border rounded-md w-full" rows="2" placeholder="比如：希望学习长期主义与责任感"></textarea>
         </label>
 
         <button type="submit" class="bg-appleBlue text-white py-2 px-4 rounded-full">提交</button>
