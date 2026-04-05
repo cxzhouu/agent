@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 class="text-3xl font-semibold mb-4">会话详情</h1>
+    <p>会话类型: {{ session.session_type }}</p>
+    <p>会话 ID: {{ session.session_id }}</p>
+
+    <h2 class="mt-6 text-2xl font-semibold">对话历史</h2>
+    <div class="space-y-4">
+        {% for round in session.rounds %}
+            <div class="rounded-lg border p-4 bg-white">
+                <p><strong>学生提问：</strong>{{ round.student_question }}</p>
+                <p><strong>英雄回答：</strong>{{ round.hero_answer }}</p>
+                <p><strong>老师总结：</strong>{{ round.teacher_summary }}</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

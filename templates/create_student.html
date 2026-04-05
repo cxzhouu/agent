@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 class="text-3xl font-semibold mb-4 text-appleText">创建学生智能体</h1>
+    <form action="/students/create" method="POST" class="space-y-4">
+        <label class="block text-appleText">
+            <span class="text-lg">姓名</span>
+            <input type="text" name="name" required class="mt-1 p-2 border rounded-md w-full" placeholder="请输入学生姓名">
+        </label>
+
+        <label class="block text-appleText">
+            <span class="text-lg">年级</span>
+            <input type="text" name="grade" required class="mt-1 p-2 border rounded-md w-full" placeholder="请输入年级">
+        </label>
+
+        <label class="block text-appleText">
+            <span class="text-lg">专业</span>
+            <input type="text" name="major" required class="mt-1 p-2 border rounded-md w-full" placeholder="请输入专业">
+        </label>
+
+        <label class="block text-appleText">
+            <span class="text-lg">当前身份</span>
+            <input type="text" name="identity" required class="mt-1 p-2 border rounded-md w-full" placeholder="请输入当前身份">
+        </label>
+
+        <button type="submit" class="bg-appleBlue text-white py-2 px-4 rounded-full">提交</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 class="text-3xl font-semibold mb-4 text-appleText">会话管理</h1>
+    <ul class="space-y-4">
+        {% for session in sessions %}
+            <li>
+                <a href="/sessions/{{ session.session_id }}" class="inline-block bg-appleBlue text-white py-2 px-4 rounded-full">
+                    会话 ID: {{ session.session_id }} - {{ session.session_type }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
