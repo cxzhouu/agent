@@ -1,69 +1,323 @@
-/* 基本样式 */
+:root {
+    --apple-bg: #f5f5f7;
+    --apple-surface: rgba(255, 255, 255, 0.82);
+    --apple-text: #1d1d1f;
+    --apple-subtext: #6e6e73;
+    --apple-blue: #0071e3;
+    --apple-blue-deep: #0059b8;
+    --apple-border: rgba(15, 23, 42, 0.08);
+    --apple-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+* {
+    box-sizing: border-box;
+}
+
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f5f5f7; /* 浅灰色背景 */
-    color: #1d1d1f; /* 深色字体 */
+    margin: 0;
+    min-height: 100vh;
+    font-family: "SF Pro Text", "SF Pro Display", "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+    background:
+        radial-gradient(circle at 20% -10%, #dbeafe 0%, transparent 36%),
+        radial-gradient(circle at 80% -20%, #ede9fe 0%, transparent 36%),
+        var(--apple-bg);
+    color: var(--apple-text);
 }
 
-a {
+.app-shell {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 24px 20px 40px;
+}
+
+.top-nav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.76);
+    border-bottom: 1px solid var(--apple-border);
+}
+
+.top-nav__inner {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.brand {
+    font-weight: 700;
+    color: var(--apple-text);
+    letter-spacing: 0.01em;
+}
+
+.top-nav a {
+    color: var(--apple-subtext);
     text-decoration: none;
-    color: #0071e3; /* 链接字体颜色 */
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 999px;
+    transition: all 0.2s ease;
 }
 
-a:hover {
-    color: #005bb5; /* 链接悬停颜色 */
+.top-nav a:hover {
+    color: var(--apple-text);
+    background: rgba(0, 113, 227, 0.1);
 }
 
-/* 按钮样式 */
-button {
-    transition: background-color 0.3s ease;
-    background-color: #0071e3;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 8px;
-    border: none;
+.card {
+    background: var(--apple-surface);
+    border: 1px solid var(--apple-border);
+    border-radius: 16px;
+    box-shadow: var(--apple-shadow);
 }
 
-button:hover {
-    background-color: #005bb5;
+.page-title {
+    font-size: clamp(1.7rem, 3vw, 2.4rem);
+    line-height: 1.2;
+    margin: 0;
 }
 
-/* 输入框样式 */
-input, select, textarea {
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 8px;
+.page-subtitle {
+    margin-top: 12px;
+    color: var(--apple-subtext);
+}
+
+.btn-primary {
+    display: inline-block;
+    border: 0;
+    cursor: pointer;
+    text-decoration: none;
+    background: linear-gradient(180deg, #1a82f7 0%, var(--apple-blue) 100%);
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 999px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(180deg, #1576e0 0%, var(--apple-blue-deep) 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba(0, 113, 227, 0.26);
+}
+
+.btn-secondary {
+    display: inline-block;
+    text-decoration: none;
+    color: var(--apple-blue);
+    font-weight: 600;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: rgba(0, 113, 227, 0.1);
+}
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+input,
+textarea,
+select {
+    border: 1px solid rgba(15, 23, 42, 0.15);
+    border-radius: 12px;
     width: 100%;
+    padding: 10px 12px;
+    background: #fff;
 }
 
-/* 背景颜色和文字颜色的修改 */
-.bg-appleBg {
-    background-color: #f5f5f7;
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: #7cb4f8;
+    box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.12);
 }
 
-.text-appleText {
-    color: #1d1d1f;
+label span {
+    display: inline-block;
+    margin-bottom: 8px;
+    color: var(--apple-text);
+    font-weight: 600;
 }
 
-.text-appleSub {
-    color: #6e6e73;
+.muted {
+    color: var(--apple-subtext);
 }
 
-/* 卡片背景 */
-.bg-appleCard {
-    background-color: rgba(255, 255, 255, 0.82); /* 半透明白色 */
+.list-reset {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
-/* 苹果蓝色 */
-.bg-appleBlue {
-    background-color: #0071e3;
+.stack {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
-.text-appleBlue {
-    color: #0071e3;
+
+.btn-danger {
+    display: inline-block;
+    border: 0;
+    cursor: pointer;
+    text-decoration: none;
+    background: #e5484d;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-weight: 600;
 }
 
-/* 边框颜色 */
-.border-appleBorder {
-    border-color: rgba(0, 0, 0, 0.06);
+.btn-danger:hover {
+    background: #ce2f35;
+}
+
+input[type="checkbox"] {
+    width: auto;
+}
+
+.chat-window {
+    background: rgba(255, 255, 255, 0.65);
+    border: 1px solid var(--apple-border);
+    border-radius: 18px;
+    padding: 16px;
+    min-height: 360px;
+    max-height: 70vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chat-time {
+    align-self: center;
+    font-size: 12px;
+    color: var(--apple-subtext);
+    background: rgba(15, 23, 42, 0.05);
+    padding: 4px 10px;
+    border-radius: 999px;
+}
+
+.chat-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    max-width: 92%;
+}
+
+.chat-row--self {
+    margin-left: auto;
+    flex-direction: row-reverse;
+}
+
+.chat-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #dbeafe;
+    color: #1e3a8a;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    flex: 0 0 30px;
+}
+
+.chat-avatar--teacher {
+    background: #ede9fe;
+    color: #5b21b6;
+}
+
+.chat-bubble {
+    background: #fff;
+    border: 1px solid rgba(15, 23, 42, 0.1);
+    border-radius: 14px;
+    padding: 9px 12px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+}
+
+.chat-bubble--self {
+    background: #0071e3;
+    color: white;
+    border-color: #0071e3;
+}
+
+.chat-bubble--teacher {
+    background: #f8f6ff;
+}
+
+.chat-empty {
+    color: var(--apple-subtext);
+    text-align: center;
+    margin-top: 30px;
+}
+
+.loading-dot {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    margin-right: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: pulse-dot 1s ease-in-out infinite;
+    opacity: 0.6;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { transform: scale(0.9); opacity: 0.5; }
+    50% { transform: scale(1.2); opacity: 1; }
+}
+
+.voice-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    border-radius: 999px;
+    background: rgba(0, 113, 227, 0.08);
+    color: var(--apple-text);
+    font-size: 14px;
+}
+
+.voice-toggle input {
+    width: auto;
+}
+
+.chat-bubble {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.bubble-text {
+    flex: 1;
+}
+
+.speak-btn {
+    border: 0;
+    background: rgba(15, 23, 42, 0.08);
+    border-radius: 999px;
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chat-bubble--self .speak-btn {
+    background: rgba(255, 255, 255, 0.25);
+    color: #fff;
 }
