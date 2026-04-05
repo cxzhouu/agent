@@ -3,38 +3,158 @@
 {% block content %}
     <div class="flex items-center justify-between gap-3 flex-wrap mb-2">
         <h1 class="page-title">会话详情</h1>
-        <form action="/sessions/{{ session.session_id }}/next-round" method="POST">
-            <button type="submit" class="btn-primary">开始下一轮对话</button>
-        </form>
+        <button id="nextRoundBtn" type="button" class="btn-primary">开始下一轮对话</button>
     </div>
 
     <p class="muted">会话类型: {{ session.session_type }} ｜ 会话 ID: {{ session.session_id }}</p>
 
-    <h2 class="text-2xl font-semibold mt-6 mb-3">对话历史</h2>
-    <div class="stack">
+    <div id="chatWindow" class="chat-window mt-5">
         {% if session.rounds %}
             {% for round in session.rounds %}
-                <div class="card p-4">
-                    <p><strong>第 {{ loop.index }} 轮学生提问：</strong>{{ round.student_question }}</p>
-
-                    {% if round.hero_rounds %}
-                        <div class="mt-3 stack">
-                            {% for hero_round in round.hero_rounds %}
-                                <div class="border rounded-xl p-3 bg-white/70">
-                                    <p><strong>英雄：</strong>{{ hero_round.hero_name }}</p>
-                                    <p><strong>英雄回答：</strong>{{ hero_round.hero_answer }}</p>
-                                    <p><strong>老师总结：</strong>{{ hero_round.teacher_summary }}</p>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <p class="mt-2"><strong>英雄回答：</strong>{{ round.hero_answer }}</p>
-                        <p class="mt-1"><strong>老师总结：</strong>{{ round.teacher_summary }}</p>
-                    {% endif %}
+                <div class="chat-time">第 {{ loop.index }} 轮</div>
+                <div class="chat-row chat-row--self">
+                    <div class="chat-avatar">{{ student_name[0] if student_name else '学' }}</div>
+                    <div class="chat-bubble chat-bubble--self">{{ round.student_question }}</div>
                 </div>
+
+                {% if round.hero_rounds %}
+                    {% for hero_round in round.hero_rounds %}
+                        <div class="chat-row">
+                            <div class="chat-avatar">{{ hero_round.hero_name[0] }}</div>
+                            <div class="chat-bubble">{{ hero_round.hero_answer }}</div>
+                        </div>
+                        <div class="chat-row">
+                            <div class="chat-avatar chat-avatar--teacher">师</div>
+                            <div class="chat-bubble chat-bubble--teacher">{{ hero_round.teacher_summary }}</div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="chat-row">
+                        <div class="chat-avatar">{{ round.hero_name[0] if round.hero_name else '英' }}</div>
+                        <div class="chat-bubble">{{ round.hero_answer }}</div>
+                    </div>
+                    <div class="chat-row">
+                        <div class="chat-avatar chat-avatar--teacher">师</div>
+                        <div class="chat-bubble chat-bubble--teacher">{{ round.teacher_summary }}</div>
+                    </div>
+                {% endif %}
             {% endfor %}
         {% else %}
-            <div class="card p-4 muted">暂无对话内容，请点击右上角“开始下一轮对话”。</div>
+            <div class="chat-empty">暂无对话内容，点击右上角按钮开始首轮对话。</div>
         {% endif %}
     </div>
+
+<script>
+const sessionId = "{{ session.session_id }}";
+const sessionType = "{{ session.session_type }}";
+const studentName = "{{ student_name }}";
+const heroNameMap = {{ hero_name_map | tojson }};
+
+const chatWindow = document.getElementById("chatWindow");
+const nextRoundBtn = document.getElementById("nextRoundBtn");
+
+function avatarChar(name, fallback) {
+    return (name && name.trim()) ? name.trim()[0] : fallback;
+}
+
+function appendTimeLabel(label) {
+    const el = document.createElement("div");
+    el.className = "chat-time";
+    el.textContent = label;
+    chatWindow.appendChild(el);
+}
+
+function appendMessage({ side = "left", name = "", text = "", role = "hero" }) {
+    const row = document.createElement("div");
+    row.className = side === "right" ? "chat-row chat-row--self" : "chat-row";
+
+    const avatar = document.createElement("div");
+    avatar.className = role === "teacher" ? "chat-avatar chat-avatar--teacher" : "chat-avatar";
+    avatar.textContent = role === "teacher" ? "师" : avatarChar(name, side === "right" ? "学" : "英");
+
+    const bubble = document.createElement("div");
+    bubble.className = side === "right" ? "chat-bubble chat-bubble--self" : (role === "teacher" ? "chat-bubble chat-bubble--teacher" : "chat-bubble");
+    bubble.textContent = text;
+
+    row.appendChild(avatar);
+    row.appendChild(bubble);
+    chatWindow.appendChild(row);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+function appendLoading({ role, label }) {
+    const row = document.createElement("div");
+    row.className = role === "student" ? "chat-row chat-row--self" : "chat-row";
+
+    const avatar = document.createElement("div");
+    avatar.className = role === "teacher" ? "chat-avatar chat-avatar--teacher" : "chat-avatar";
+    avatar.textContent = role === "teacher" ? "师" : (role === "student" ? avatarChar(studentName, "学") : "英");
+
+    const bubble = document.createElement("div");
+    bubble.className = role === "student" ? "chat-bubble chat-bubble--self" : "chat-bubble";
+    bubble.innerHTML = `<span class="loading-dot"></span>${label}`;
+
+    row.appendChild(avatar);
+    row.appendChild(bubble);
+    chatWindow.appendChild(row);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+    return row;
+}
+
+async function runRound() {
+    nextRoundBtn.disabled = true;
+    nextRoundBtn.textContent = "对话生成中...";
+
+    const currentRound = chatWindow.querySelectorAll('.chat-time').length + 1;
+    appendTimeLabel(`第 ${currentRound} 轮`);
+
+    const studentLoading = appendLoading({ role: "student", label: "学生正在思考中..." });
+
+    try {
+        const resp = await fetch(`/sessions/${sessionId}/next-round-json`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: "{}"
+        });
+        const data = await resp.json();
+
+        studentLoading.remove();
+        appendMessage({ side: "right", name: studentName, text: data.student_question, role: "student" });
+
+        if (sessionType === "single") {
+            const heroLoad = appendLoading({ role: "hero", label: `${data.hero_name}正在思考中...` });
+            setTimeout(() => {
+                heroLoad.remove();
+                appendMessage({ side: "left", name: data.hero_name, text: data.hero_answer, role: "hero" });
+
+                const teacherLoad = appendLoading({ role: "teacher", label: "老师正在总结中..." });
+                setTimeout(() => {
+                    teacherLoad.remove();
+                    appendMessage({ side: "left", name: "老师", text: data.teacher_summary, role: "teacher" });
+                }, 250);
+            }, 250);
+        } else {
+            for (const heroRound of data.hero_rounds) {
+                const heroName = heroRound.hero_name || heroNameMap[heroRound.hero_doc_id] || "英雄";
+                const heroLoad = appendLoading({ role: "hero", label: `${heroName}正在思考中...` });
+                await new Promise(r => setTimeout(r, 200));
+                heroLoad.remove();
+                appendMessage({ side: "left", name: heroName, text: heroRound.hero_answer, role: "hero" });
+
+                const teacherLoad = appendLoading({ role: "teacher", label: `老师正在总结${heroName}的回答...` });
+                await new Promise(r => setTimeout(r, 180));
+                teacherLoad.remove();
+                appendMessage({ side: "left", name: "老师", text: heroRound.teacher_summary, role: "teacher" });
+            }
+        }
+    } catch (e) {
+        appendMessage({ side: "left", name: "系统", text: "本轮对话生成失败，请稍后重试。", role: "teacher" });
+    } finally {
+        nextRoundBtn.disabled = false;
+        nextRoundBtn.textContent = "开始下一轮对话";
+    }
+}
+
+nextRoundBtn.addEventListener("click", runRound);
+</script>
 {% endblock %}

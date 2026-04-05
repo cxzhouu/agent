@@ -184,3 +184,96 @@ label span {
 input[type="checkbox"] {
     width: auto;
 }
+
+.chat-window {
+    background: rgba(255, 255, 255, 0.65);
+    border: 1px solid var(--apple-border);
+    border-radius: 18px;
+    padding: 16px;
+    min-height: 360px;
+    max-height: 70vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chat-time {
+    align-self: center;
+    font-size: 12px;
+    color: var(--apple-subtext);
+    background: rgba(15, 23, 42, 0.05);
+    padding: 4px 10px;
+    border-radius: 999px;
+}
+
+.chat-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    max-width: 92%;
+}
+
+.chat-row--self {
+    margin-left: auto;
+    flex-direction: row-reverse;
+}
+
+.chat-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #dbeafe;
+    color: #1e3a8a;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    flex: 0 0 30px;
+}
+
+.chat-avatar--teacher {
+    background: #ede9fe;
+    color: #5b21b6;
+}
+
+.chat-bubble {
+    background: #fff;
+    border: 1px solid rgba(15, 23, 42, 0.1);
+    border-radius: 14px;
+    padding: 9px 12px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+}
+
+.chat-bubble--self {
+    background: #0071e3;
+    color: white;
+    border-color: #0071e3;
+}
+
+.chat-bubble--teacher {
+    background: #f8f6ff;
+}
+
+.chat-empty {
+    color: var(--apple-subtext);
+    text-align: center;
+    margin-top: 30px;
+}
+
+.loading-dot {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    margin-right: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: pulse-dot 1s ease-in-out infinite;
+    opacity: 0.6;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { transform: scale(0.9); opacity: 0.5; }
+    50% { transform: scale(1.2); opacity: 1; }
+}

@@ -151,7 +151,22 @@ def next_round():
 @app.route("/sessions/<session_id>")
 def get_session(session_id):
     session = session_store.load_session(session_id)
-    return render_template("session_detail.html", session=session)
+    student_doc_id = session.get("payload", {}).get("student_doc_id", "")
+    student_name = student_service.get_student_name(student_doc_id) if student_doc_id else "学生"
+
+    hero_name_map = {hero["doc_id"]: hero["name"] for hero in hero_service.list_heroes()}
+    return render_template(
+        "session_detail.html",
+        session=session,
+        student_name=student_name,
+        hero_name_map=hero_name_map,
+    )
+
+
+@app.route("/sessions/<session_id>/next-round-json", methods=["POST"])
+def next_round_json(session_id):
+    round_data = dialogue_service.run_next_round(session_id)
+    return jsonify(round_data)
 
 
 if __name__ == "__main__":
