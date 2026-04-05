@@ -3,7 +3,14 @@
 {% block content %}
     <div class="flex items-center justify-between gap-3 flex-wrap mb-2">
         <h1 class="page-title">会话详情</h1>
-        <button id="nextRoundBtn" type="button" class="btn-primary">开始下一轮对话</button>
+        <div class="flex items-center gap-2 flex-wrap">
+            <label class="voice-toggle">
+                <input id="autoVoice" type="checkbox" checked>
+                <span>自动语音朗读</span>
+            </label>
+            <button id="stopVoiceBtn" type="button" class="btn-secondary">停止朗读</button>
+            <button id="nextRoundBtn" type="button" class="btn-primary">开始下一轮对话</button>
+        </div>
     </div>
 
     <p class="muted">会话类型: {{ session.session_type }} ｜ 会话 ID: {{ session.session_id }}</p>
@@ -14,28 +21,43 @@
                 <div class="chat-time">第 {{ loop.index }} 轮</div>
                 <div class="chat-row chat-row--self">
                     <div class="chat-avatar">{{ student_name[0] if student_name else '学' }}</div>
-                    <div class="chat-bubble chat-bubble--self">{{ round.student_question }}</div>
+                    <div class="chat-bubble chat-bubble--self">
+                        <div class="bubble-text">{{ round.student_question }}</div>
+                        <button type="button" class="speak-btn" data-text="{{ round.student_question|e }}">🔊</button>
+                    </div>
                 </div>
 
                 {% if round.hero_rounds %}
                     {% for hero_round in round.hero_rounds %}
                         <div class="chat-row">
                             <div class="chat-avatar">{{ hero_round.hero_name[0] }}</div>
-                            <div class="chat-bubble">{{ hero_round.hero_answer }}</div>
+                            <div class="chat-bubble">
+                                <div class="bubble-text">{{ hero_round.hero_answer }}</div>
+                                <button type="button" class="speak-btn" data-text="{{ hero_round.hero_answer|e }}">🔊</button>
+                            </div>
                         </div>
                         <div class="chat-row">
                             <div class="chat-avatar chat-avatar--teacher">师</div>
-                            <div class="chat-bubble chat-bubble--teacher">{{ hero_round.teacher_summary }}</div>
+                            <div class="chat-bubble chat-bubble--teacher">
+                                <div class="bubble-text">{{ hero_round.teacher_summary }}</div>
+                                <button type="button" class="speak-btn" data-text="{{ hero_round.teacher_summary|e }}">🔊</button>
+                            </div>
                         </div>
                     {% endfor %}
                 {% else %}
                     <div class="chat-row">
                         <div class="chat-avatar">{{ round.hero_name[0] if round.hero_name else '英' }}</div>
-                        <div class="chat-bubble">{{ round.hero_answer }}</div>
+                        <div class="chat-bubble">
+                            <div class="bubble-text">{{ round.hero_answer }}</div>
+                            <button type="button" class="speak-btn" data-text="{{ round.hero_answer|e }}">🔊</button>
+                        </div>
                     </div>
                     <div class="chat-row">
                         <div class="chat-avatar chat-avatar--teacher">师</div>
-                        <div class="chat-bubble chat-bubble--teacher">{{ round.teacher_summary }}</div>
+                        <div class="chat-bubble chat-bubble--teacher">
+                            <div class="bubble-text">{{ round.teacher_summary }}</div>
+                            <button type="button" class="speak-btn" data-text="{{ round.teacher_summary|e }}">🔊</button>
+                        </div>
                     </div>
                 {% endif %}
             {% endfor %}
@@ -52,6 +74,32 @@ const heroNameMap = {{ hero_name_map | tojson }};
 
 const chatWindow = document.getElementById("chatWindow");
 const nextRoundBtn = document.getElementById("nextRoundBtn");
+const autoVoice = document.getElementById("autoVoice");
+const stopVoiceBtn = document.getElementById("stopVoiceBtn");
+
+function speakText(text) {
+    if (!window.speechSynthesis || !text) return;
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "zh-CN";
+    u.rate = 1;
+    u.pitch = 1;
+    window.speechSynthesis.speak(u);
+}
+
+function bindSpeakButtons(root = document) {
+    root.querySelectorAll('.speak-btn').forEach(btn => {
+        if (btn.dataset.bound === '1') return;
+        btn.dataset.bound = '1';
+        btn.addEventListener('click', () => {
+            window.speechSynthesis?.cancel();
+            speakText(btn.dataset.text || "");
+        });
+    });
+}
+
+stopVoiceBtn.addEventListener('click', () => {
+    window.speechSynthesis?.cancel();
+});
 
 function avatarChar(name, fallback) {
     return (name && name.trim()) ? name.trim()[0] : fallback;
@@ -64,6 +112,25 @@ function appendTimeLabel(label) {
     chatWindow.appendChild(el);
 }
 
+function buildBubbleText(side, role, text) {
+    const bubble = document.createElement("div");
+    bubble.className = side === "right" ? "chat-bubble chat-bubble--self" : (role === "teacher" ? "chat-bubble chat-bubble--teacher" : "chat-bubble");
+
+    const content = document.createElement('div');
+    content.className = 'bubble-text';
+    content.textContent = text;
+
+    const speakBtn = document.createElement('button');
+    speakBtn.type = 'button';
+    speakBtn.className = 'speak-btn';
+    speakBtn.textContent = '🔊';
+    speakBtn.dataset.text = text;
+
+    bubble.appendChild(content);
+    bubble.appendChild(speakBtn);
+    return bubble;
+}
+
 function appendMessage({ side = "left", name = "", text = "", role = "hero" }) {
     const row = document.createElement("div");
     row.className = side === "right" ? "chat-row chat-row--self" : "chat-row";
@@ -72,14 +139,15 @@ function appendMessage({ side = "left", name = "", text = "", role = "hero" }) {
     avatar.className = role === "teacher" ? "chat-avatar chat-avatar--teacher" : "chat-avatar";
     avatar.textContent = role === "teacher" ? "师" : avatarChar(name, side === "right" ? "学" : "英");
 
-    const bubble = document.createElement("div");
-    bubble.className = side === "right" ? "chat-bubble chat-bubble--self" : (role === "teacher" ? "chat-bubble chat-bubble--teacher" : "chat-bubble");
-    bubble.textContent = text;
+    const bubble = buildBubbleText(side, role, text);
 
     row.appendChild(avatar);
     row.appendChild(bubble);
     chatWindow.appendChild(row);
     chatWindow.scrollTop = chatWindow.scrollHeight;
+
+    bindSpeakButtons(row);
+    if (autoVoice.checked) speakText(text);
 }
 
 function appendLoading({ role, label }) {
@@ -155,6 +223,7 @@ async function runRound() {
     }
 }
 
+bindSpeakButtons(document);
 nextRoundBtn.addEventListener("click", runRound);
 </script>
 {% endblock %}

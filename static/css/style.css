@@ -277,3 +277,47 @@ input[type="checkbox"] {
     0%, 100% { transform: scale(0.9); opacity: 0.5; }
     50% { transform: scale(1.2); opacity: 1; }
 }
+
+.voice-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    border-radius: 999px;
+    background: rgba(0, 113, 227, 0.08);
+    color: var(--apple-text);
+    font-size: 14px;
+}
+
+.voice-toggle input {
+    width: auto;
+}
+
+.chat-bubble {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.bubble-text {
+    flex: 1;
+}
+
+.speak-btn {
+    border: 0;
+    background: rgba(15, 23, 42, 0.08);
+    border-radius: 999px;
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chat-bubble--self .speak-btn {
+    background: rgba(255, 255, 255, 0.25);
+    color: #fff;
+}
