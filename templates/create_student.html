@@ -1,28 +1,56 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1 class="text-3xl font-semibold mb-4 text-appleText">创建学生智能体</h1>
-    <form action="/students/create" method="POST" class="space-y-4">
-        <label class="block text-appleText">
-            <span class="text-lg">姓名</span>
-            <input type="text" name="name" required class="mt-1 p-2 border rounded-md w-full" placeholder="请输入学生姓名">
-        </label>
+    <section class="card p-6 md:p-8">
+        <h1 class="page-title mb-2">创建学生智能体</h1>
+        <p class="muted mb-6">现在改为“精简版录入”：先填核心信息，系统也能生成可用于 chunk/embed/rag 的学生档案。若你有更多信息，可填在“补充描述”。</p>
 
-        <label class="block text-appleText">
-            <span class="text-lg">年级</span>
-            <input type="text" name="grade" required class="mt-1 p-2 border rounded-md w-full" placeholder="请输入年级">
-        </label>
+        <form action="/students/create" method="POST" class="space-y-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <label class="block">
+                    <span>姓名（必填）</span>
+                    <input type="text" name="name" required placeholder="请输入学生姓名">
+                </label>
 
-        <label class="block text-appleText">
-            <span class="text-lg">专业</span>
-            <input type="text" name="major" required class="mt-1 p-2 border rounded-md w-full" placeholder="请输入专业">
-        </label>
+                <label class="block">
+                    <span>年级（必填）</span>
+                    <input type="text" name="grade" required placeholder="例如：大二">
+                </label>
+            </div>
 
-        <label class="block text-appleText">
-            <span class="text-lg">当前身份</span>
-            <input type="text" name="identity" required class="mt-1 p-2 border rounded-md w-full" placeholder="请输入当前身份">
-        </label>
+            <label class="block">
+                <span>专业（必填）</span>
+                <input type="text" name="major" required placeholder="例如：计算机科学与技术">
+            </label>
 
-        <button type="submit" class="bg-appleBlue text-white py-2 px-4 rounded-full">提交</button>
-    </form>
+            <label class="block">
+                <span>当前身份</span>
+                <input type="text" name="identity" placeholder="例如：准备就业的工科学生">
+            </label>
+
+            <label class="block">
+                <span>当前学习困惑（每行一条）</span>
+                <textarea name="current_confusions" rows="3" placeholder="不知道如何规划未来方向
+缺少长期稳定的学习节奏"></textarea>
+            </label>
+
+            <label class="block">
+                <span>当前学习目标（每行一条）</span>
+                <textarea name="learning_goals" rows="3" placeholder="建立稳定学习计划
+完成一个可展示项目"></textarea>
+            </label>
+
+            <label class="block">
+                <span>希望从英雄身上得到的启发</span>
+                <textarea name="opening_expectation" rows="2" placeholder="希望学习如何在困难阶段保持行动力"></textarea>
+            </label>
+
+            <label class="block">
+                <span>补充描述（可选，系统会按个人画像处理）</span>
+                <textarea name="self_view" rows="4" placeholder="可填写性格、优势、价值观、表达风格等总结性描述"></textarea>
+            </label>
+
+            <button type="submit" class="btn-primary">创建并生成学生智能体</button>
+        </form>
+    </section>
 {% endblock %}

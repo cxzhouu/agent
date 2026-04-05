@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <section class="card p-6 md:p-8">
+        <h1 class="page-title mb-2">与英雄面对面交流</h1>
+        <p class="muted mb-6">先选学生，再选一个英雄。进入会话后点击“开始下一轮对话”即可触发：学生提问 → 英雄回答 → 老师总结。</p>
+
+        <form action="/dialogue/single/start" method="POST" class="space-y-4">
+            <label class="block">
+                <span>选择学生智能体</span>
+                <select name="student_doc_id" required>
+                    <option value="" disabled selected>请选择学生</option>
+                    {% for student in students %}
+                        <option value="{{ student.doc_id }}">{{ student.doc_id }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+
+            <label class="block">
+                <span>选择英雄智能体</span>
+                <select name="hero_doc_id" required>
+                    <option value="" disabled selected>请选择英雄</option>
+                    {% for hero in heroes %}
+                        <option value="{{ hero.doc_id }}">{{ hero.name }}（{{ hero.doc_id }}）</option>
+                    {% endfor %}
+                </select>
+            </label>
+
+            <button type="submit" class="btn-primary">进入交流页面</button>
+        </form>
+    </section>
+{% endblock %}

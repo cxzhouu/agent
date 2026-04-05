@@ -1,4 +1,4 @@
-import json
+import shutil
 from pathlib import Path
 from typing import Dict, Any, List
 
@@ -205,3 +205,28 @@ class StudentService:
         if not md_file.exists():
             raise FileNotFoundError(f"未找到学生档案：{doc_id}")
         return md_file.read_text(encoding="utf-8")
+
+    def delete_student(self, doc_id: str) -> None:
+        md_file = self.raw_root / f"{doc_id}.md"
+        if md_file.exists():
+            md_file.unlink()
+
+        chunk_dir = self.chunk_root / doc_id
+        if chunk_dir.exists():
+            shutil.rmtree(chunk_dir)
+
+        embedding_dir = self.embedding_root / doc_id
+        if embedding_dir.exists():
+            shutil.rmtree(embedding_dir)
+
+    def get_student_name(self, doc_id: str) -> str:
+        text = self.get_student_markdown(doc_id)
+        lines = text.splitlines()
+        for idx, line in enumerate(lines):
+            if line.strip() == "### 姓名" and idx + 1 < len(lines):
+                name = lines[idx + 1].strip()
+                if name:
+                    return name
+        if doc_id.startswith("student_"):
+            return doc_id.replace("student_", "", 1)
+        return doc_id
