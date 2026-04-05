@@ -1,7 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1 class="page-title mb-4">会话管理</h1>
+    <div class="flex items-center justify-between gap-3 flex-wrap mb-4">
+        <h1 class="page-title">会话管理</h1>
+        <div class="flex gap-2 flex-wrap">
+            <a href="/dialogue/single" class="btn-primary">新建单英雄对话</a>
+            <a href="/dialogue/multi" class="btn-secondary">新建多英雄对话</a>
+        </div>
+    </div>
 
     {% if sessions %}
         <ul class="list-reset stack">
@@ -15,6 +21,6 @@
             {% endfor %}
         </ul>
     {% else %}
-        <div class="card p-5 muted">当前还没有会话记录。</div>
+        <div class="card p-5 muted">当前还没有会话记录，请先创建一场对话。</div>
     {% endif %}
 {% endblock %}

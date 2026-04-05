@@ -3,49 +3,132 @@
 {% block content %}
     <section class="card p-6 md:p-8">
         <h1 class="page-title mb-2">创建学生智能体</h1>
-        <p class="muted mb-6">必填字段很少，其他都可按需填写。多条信息建议一行一条。</p>
+        <p class="muted mb-6">建议按“每行一条”填写列表字段，系统会自动整理为适合 chunk/embed/rag 的学生档案 Markdown。</p>
 
-        <form action="/students/create" method="POST" class="space-y-4">
-            <label class="block">
-                <span>姓名</span>
-                <input type="text" name="name" required placeholder="请输入学生姓名">
-            </label>
-
+        <form action="/students/create" method="POST" class="space-y-5">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <label class="block">
-                    <span>年级</span>
-                    <input type="text" name="grade" required placeholder="例如：大二">
+                    <span>姓名（必填）</span>
+                    <input type="text" name="name" required placeholder="请输入学生姓名">
                 </label>
 
                 <label class="block">
-                    <span>专业</span>
-                    <input type="text" name="major" required placeholder="例如：计算机科学与技术">
+                    <span>年级（必填）</span>
+                    <input type="text" name="grade" required placeholder="例如：大二">
                 </label>
             </div>
 
             <label class="block">
+                <span>专业（必填）</span>
+                <input type="text" name="major" required placeholder="例如：计算机科学与技术">
+            </label>
+
+            <label class="block">
                 <span>当前身份</span>
-                <input type="text" name="identity" placeholder="例如：正在准备考研的工科学生">
+                <input type="text" name="identity" placeholder="例如：准备考研/准备就业/社团骨干">
             </label>
 
             <label class="block">
                 <span>自我认知</span>
-                <textarea name="self_view" rows="2" placeholder="比如：执行力强，但常常方向不清"></textarea>
+                <textarea name="self_view" rows="2" placeholder="例如：执行力强，但容易焦虑"></textarea>
+            </label>
+
+            <label class="block">
+                <span>性格特点（每行一条）</span>
+                <textarea name="personality_traits" rows="3" placeholder="认真
+乐于合作
+遇到压力时容易内耗"></textarea>
+            </label>
+
+            <label class="block">
+                <span>表达风格（每行一条）</span>
+                <textarea name="speaking_style" rows="3" placeholder="喜欢先讲问题再讲感受
+希望得到具体建议"></textarea>
+            </label>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <label class="block">
+                    <span>兴趣方向（每行一条）</span>
+                    <textarea name="interests" rows="3" placeholder="人工智能
+阅读传记"></textarea>
+                </label>
+
+                <label class="block">
+                    <span>当前擅长（每行一条）</span>
+                    <textarea name="strengths" rows="3" placeholder="编程基础较好
+擅长做项目复盘"></textarea>
+                </label>
+            </div>
+
+            <label class="block">
+                <span>当前薄弱点（每行一条）</span>
+                <textarea name="weaknesses" rows="3" placeholder="公开表达不自信
+时间管理不稳定"></textarea>
+            </label>
+
+            <label class="block">
+                <span>当前学习阶段</span>
+                <input type="text" name="current_stage" placeholder="例如：专业基础向项目实践过渡期">
+            </label>
+
+            <label class="block">
+                <span>当前学习目标（每行一条）</span>
+                <textarea name="learning_goals" rows="3" placeholder="夯实算法能力
+完成一个可展示项目"></textarea>
             </label>
 
             <label class="block">
                 <span>当前学习困惑（每行一条）</span>
-                <textarea name="current_confusions" rows="3" placeholder="例如：
-不知道如何把专业能力转化为实际价值
-时间管理困难"></textarea>
+                <textarea name="current_confusions" rows="3" placeholder="不知道如何把专业能力转化为价值
+容易因为短期波动否定自己"></textarea>
             </label>
 
             <label class="block">
-                <span>希望得到的启发</span>
-                <textarea name="opening_expectation" rows="2" placeholder="比如：希望学习长期主义与责任感"></textarea>
+                <span>关注的问题（每行一条）</span>
+                <textarea name="concerns" rows="3" placeholder="如何平衡理想和现实
+如何建立长期主义"></textarea>
             </label>
 
-            <button type="submit" class="btn-primary">提交</button>
+            <label class="block">
+                <span>认可的价值观（每行一条）</span>
+                <textarea name="values" rows="3" placeholder="责任感
+持续奋斗
+服务社会"></textarea>
+            </label>
+
+            <label class="block">
+                <span>对未来的期待</span>
+                <textarea name="expectations" rows="2" placeholder="希望成为有专业能力、也有社会担当的人"></textarea>
+            </label>
+
+            <label class="block">
+                <span>常见提问方式（每行一条）</span>
+                <textarea name="common_questions" rows="3" placeholder="我最近最困惑的是...
+如果是您会怎么选择？"></textarea>
+            </label>
+
+            <label class="block">
+                <span>适合的回应方式（每行一条）</span>
+                <textarea name="response_preference" rows="3" placeholder="先共情再建议
+最好给出可执行步骤"></textarea>
+            </label>
+
+            <label class="block">
+                <span>面向英雄提问时的身份介绍</span>
+                <textarea name="opening_intro" rows="2" placeholder="您好，我是一名大二工科学生，目前在思考成长方向。"></textarea>
+            </label>
+
+            <label class="block">
+                <span>当前最想解决的问题</span>
+                <textarea name="opening_problem" rows="2" placeholder="我在长期目标和短期压力之间经常摇摆。"></textarea>
+            </label>
+
+            <label class="block">
+                <span>希望从英雄身上得到的启发</span>
+                <textarea name="opening_expectation" rows="2" placeholder="希望学习如何在困难中坚持初心并落实行动。"></textarea>
+            </label>
+
+            <button type="submit" class="btn-primary">创建并生成学生智能体</button>
         </form>
     </section>
 {% endblock %}

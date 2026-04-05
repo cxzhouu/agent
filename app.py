@@ -35,7 +35,7 @@ def create_student():
 
         def lines(field_name: str):
             raw = student_data.get(field_name, "")
-            return raw.split("\n") if raw else []
+            return [x.strip() for x in raw.split("\n") if x.strip()] if raw else []
 
         payload = {
             "name": student_data.get("name", ""),
@@ -67,6 +67,12 @@ def create_student():
     return render_template("create_student.html")
 
 
+@app.route("/students/<doc_id>/delete", methods=["POST"])
+def delete_student(doc_id):
+    student_service.delete_student(doc_id)
+    return redirect(url_for("list_students"))
+
+
 @app.route("/heroes")
 def list_heroes():
     heroes = hero_service.list_heroes()
@@ -79,6 +85,43 @@ def list_sessions():
     return render_template("sessions.html", sessions=sessions)
 
 
+@app.route("/dialogue/single")
+def single_dialogue_setup():
+    students = student_service.list_students()
+    heroes = hero_service.list_heroes()
+    return render_template("dialogue_single_setup.html", students=students, heroes=heroes)
+
+
+@app.route("/dialogue/multi")
+def multi_dialogue_setup():
+    students = student_service.list_students()
+    heroes = hero_service.list_heroes()
+    return render_template("dialogue_multi_setup.html", students=students, heroes=heroes)
+
+
+@app.route("/dialogue/single/start", methods=["POST"])
+def start_single_dialogue():
+    student_doc_id = request.form["student_doc_id"]
+    hero_doc_id = request.form["hero_doc_id"]
+    session = dialogue_service.create_single_session(student_doc_id, hero_doc_id)
+    return redirect(url_for("get_session", session_id=session["session_id"]))
+
+
+@app.route("/dialogue/multi/start", methods=["POST"])
+def start_multi_dialogue():
+    student_doc_id = request.form["student_doc_id"]
+    hero_doc_ids = request.form.getlist("hero_doc_ids")
+    session = dialogue_service.create_multi_session(student_doc_id, hero_doc_ids)
+    return redirect(url_for("get_session", session_id=session["session_id"]))
+
+
+@app.route("/sessions/<session_id>/next-round", methods=["POST"])
+def next_round_page(session_id):
+    dialogue_service.run_next_round(session_id)
+    return redirect(url_for("get_session", session_id=session_id))
+
+
+# 保留 API 路由，方便后续前后端分离
 @app.route("/sessions/single/create", methods=["POST"])
 def create_single_session():
     payload = request.json

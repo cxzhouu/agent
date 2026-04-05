@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <section class="card p-6 md:p-8">
+        <h1 class="page-title mb-2">多英雄交流平台</h1>
+        <p class="muted mb-6">先选一个学生，再选择 2~5 位英雄。每轮都会由学生提问、所选英雄依次回答、老师分别总结引导。</p>
+
+        <form action="/dialogue/multi/start" method="POST" class="space-y-4">
+            <label class="block">
+                <span>选择学生智能体</span>
+                <select name="student_doc_id" required>
+                    <option value="" disabled selected>请选择学生</option>
+                    {% for student in students %}
+                        <option value="{{ student.doc_id }}">{{ student.doc_id }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+
+            <fieldset>
+                <legend class="font-semibold mb-2">选择 2~5 位英雄</legend>
+                <div class="stack">
+                    {% for hero in heroes %}
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" name="hero_doc_ids" value="{{ hero.doc_id }}" class="w-auto">
+                            <span class="!mb-0">{{ hero.name }}（{{ hero.doc_id }}）</span>
+                        </label>
+                    {% endfor %}
+                </div>
+            </fieldset>
+
+            <button type="submit" class="btn-primary">进入交流页面</button>
+        </form>
+    </section>
+{% endblock %}

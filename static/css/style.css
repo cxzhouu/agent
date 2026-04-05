@@ -163,3 +163,24 @@ label span {
     flex-direction: column;
     gap: 12px;
 }
+
+
+.btn-danger {
+    display: inline-block;
+    border: 0;
+    cursor: pointer;
+    text-decoration: none;
+    background: #e5484d;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-weight: 600;
+}
+
+.btn-danger:hover {
+    background: #ce2f35;
+}
+
+input[type="checkbox"] {
+    width: auto;
+}

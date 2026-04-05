@@ -12,6 +12,9 @@
                 <li class="card p-4">
                     <p><strong>学生文档 ID：</strong>{{ student.doc_id }}</p>
                     <p class="muted text-sm break-all mt-1"><strong>文件：</strong>{{ student.file }}</p>
+                    <form action="/students/{{ student.doc_id }}/delete" method="POST" class="mt-3" onsubmit="return confirm('确认删除该学生及其 chunk/embedding 数据吗？');">
+                        <button type="submit" class="btn-danger">删除学生</button>
+                    </form>
                 </li>
             {% endfor %}
         </ul>
