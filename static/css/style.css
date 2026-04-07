@@ -25,7 +25,7 @@ body {
 }
 
 .app-shell {
-    max-width: 1040px;
+    max-width: 1520px;
     margin: 0 auto;
     padding: 24px 20px 40px;
 }
@@ -40,7 +40,7 @@ body {
 }
 
 .top-nav__inner {
-    max-width: 1040px;
+    max-width: 1520px;
     margin: 0 auto;
     padding: 12px 20px;
     display: flex;
@@ -344,4 +344,31 @@ input[type="checkbox"] {
     border: 1px solid rgba(15, 23, 42, 0.08);
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.6);
+}
+
+
+.top-nav ul {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.hero-list-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #dbeafe;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #1e3a8a;
+    font-weight: 700;
+    flex: 0 0 52px;
+}
+
+.hero-list-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
