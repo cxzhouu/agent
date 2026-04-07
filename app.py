@@ -5,6 +5,7 @@ from services.student_service import StudentService
 from services.hero_service import HeroService
 from services.dialogue_service import DialogueService
 from services.session_store import SessionStore
+from services.declaration_store import DeclarationStore
 
 # 初始化服务
 app = Flask(__name__)
@@ -15,6 +16,7 @@ student_service = StudentService(PROJECT_ROOT)
 hero_service = HeroService()
 dialogue_service = DialogueService(PROJECT_ROOT)
 session_store = SessionStore(PROJECT_ROOT)
+declaration_store = DeclarationStore(PROJECT_ROOT)
 
 
 @app.route("/")
@@ -170,6 +172,58 @@ def get_session(session_id):
 def next_round_json(session_id):
     round_data = dialogue_service.run_next_round(session_id)
     return jsonify(round_data)
+
+
+@app.route("/intro-video")
+def intro_video():
+    return render_template("intro_video.html")
+
+
+@app.route("/declarations", methods=["GET", "POST"])
+def declarations_page():
+    students = student_service.list_students()
+    selected_doc_id = request.values.get("student_doc_id", students[0]["doc_id"] if students else "")
+
+    selected_name = ""
+    existing = None
+    if selected_doc_id:
+        existing = declaration_store.load_personal(selected_doc_id)
+        selected_name = student_service.get_student_name(selected_doc_id)
+
+    if request.method == "POST" and selected_doc_id:
+        mission = request.form.get("mission", "")
+        keep_path = request.form.get("keep_path", "")
+        role_model = request.form.get("role_model", "")
+        declaration_store.save_declaration(
+            doc_id=selected_doc_id,
+            student_name=selected_name or selected_doc_id,
+            mission=mission,
+            keep_path=keep_path,
+            role_model=role_model,
+            teacher_comment=(existing or {}).get("teacher_comment", ""),
+        )
+        return redirect(url_for("declarations_page", student_doc_id=selected_doc_id))
+
+    return render_template(
+        "declarations.html",
+        students=students,
+        selected_doc_id=selected_doc_id,
+        selected_name=selected_name,
+        declaration=existing or {},
+    )
+
+
+@app.route("/declarations/shared")
+def declarations_shared():
+    rows = declaration_store.list_shared()
+    return render_template("declarations_shared.html", rows=rows)
+
+
+@app.route("/declarations/<doc_id>/comment", methods=["POST"])
+def update_declaration_comment(doc_id):
+    comment = request.form.get("teacher_comment", "")
+    declaration_store.update_comment(doc_id, comment)
+    return redirect(url_for("declarations_shared"))
 
 
 if __name__ == "__main__":

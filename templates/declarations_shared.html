@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <section class="card p-6 md:p-8">
+        <h1 class="page-title mb-2">班级共享区：成人宣言档案</h1>
+        <p class="muted mb-5">所有学生保存后的《成人宣言》会同步到这里，支持师生查阅与点评，可追溯、可后续优化。</p>
+
+        {% if rows %}
+            <div class="stack">
+                {% for row in rows %}
+                    <article class="card p-4">
+                        <h3 class="text-lg font-semibold">{{ row.student_name }}（{{ row.doc_id }}）</h3>
+                        <p class="mt-2"><strong>初心：</strong>{{ row.mission }}</p>
+                        <p class="mt-1"><strong>坚守路径：</strong>{{ row.keep_path }}</p>
+                        <p class="mt-1"><strong>榜样承诺：</strong>{{ row.role_model }}</p>
+                        <p class="muted text-sm mt-1">最近更新：{{ row.updated_at }}</p>
+
+                        <form method="POST" action="/declarations/{{ row.doc_id }}/comment" class="mt-3">
+                            <label class="block">
+                                <span>教师点评</span>
+                                <textarea name="teacher_comment" rows="2" placeholder="输入点评...">{{ row.teacher_comment }}</textarea>
+                            </label>
+                            <button type="submit" class="btn-secondary mt-2">保存点评</button>
+                        </form>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="muted">共享区暂时为空，等待学生提交成人宣言。</p>
+        {% endif %}
+    </section>
+{% endblock %}
