@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <section class="card p-6 md:p-8">
+        <h1 class="page-title mb-2">功能5：撰写《成人宣言》</h1>
+        <p class="muted mb-6">学生以个人智能体身份完成课程核心成果，支持文字编辑 + 语音输入，自动保存并同步班级共享区。</p>
+
+        <form method="GET" action="/declarations" class="mb-5">
+            <label class="block">
+                <span>选择学生智能体</span>
+                <select name="student_doc_id" onchange="this.form.submit()">
+                    {% for s in students %}
+                        <option value="{{ s.doc_id }}" {% if s.doc_id == selected_doc_id %}selected{% endif %}>{{ s.doc_id }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+        </form>
+
+        {% if selected_doc_id %}
+            <form method="POST" action="/declarations" class="space-y-4" id="declarationForm">
+                <input type="hidden" name="student_doc_id" value="{{ selected_doc_id }}">
+
+                <div class="declaration-item">
+                    <p class="font-semibold">1. 作为公管学子，我的初心是：</p>
+                    <textarea id="mission" name="mission" rows="3" placeholder="请输入你的初心...">{{ declaration.get('mission', '') }}</textarea>
+                    <button type="button" class="btn-secondary voice-input-btn" data-target="mission">🎤 语音输入</button>
+                </div>
+
+                <div class="declaration-item">
+                    <p class="font-semibold">2. 未来我将如何坚守初心：</p>
+                    <textarea id="keep_path" name="keep_path" rows="3" placeholder="请输入你的行动方案...">{{ declaration.get('keep_path', '') }}</textarea>
+                    <button type="button" class="btn-secondary voice-input-btn" data-target="keep_path">🎤 语音输入</button>
+                </div>
+
+                <div class="declaration-item">
+                    <p class="font-semibold">3. 我承诺，将以__________（榜样）为标杆，践行为民服务的使命。</p>
+                    <textarea id="role_model" name="role_model" rows="2" placeholder="例如：焦裕禄">{{ declaration.get('role_model', '') }}</textarea>
+                    <button type="button" class="btn-secondary voice-input-btn" data-target="role_model">🎤 语音输入</button>
+                </div>
+
+                <button type="submit" class="btn-primary">保存并同步共享区</button>
+            </form>
+        {% else %}
+            <div class="muted">当前没有学生，请先创建学生智能体。</div>
+        {% endif %}
+    </section>
+
+<script>
+(function() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
+
+    document.querySelectorAll('.voice-input-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.dataset.target;
+            const textarea = document.getElementById(targetId);
+            if (!textarea) return;
+
+            const rec = new SpeechRecognition();
+            rec.lang = 'zh-CN';
+            rec.interimResults = false;
+            rec.maxAlternatives = 1;
+
+            btn.disabled = true;
+            btn.textContent = '识别中...';
+
+            rec.onresult = (event) => {
+                const text = event.results[0][0].transcript || '';
+                textarea.value = textarea.value ? `${textarea.value}\n${text}` : text;
+            };
+
+            rec.onend = () => {
+                btn.disabled = false;
+                btn.textContent = '🎤 语音输入';
+            };
+
+            rec.onerror = () => {
+                btn.disabled = false;
+                btn.textContent = '🎤 语音输入';
+            };
+
+            rec.start();
+        });
+    });
+})();
+</script>
+{% endblock %}

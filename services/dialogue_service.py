@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 from typing import Dict, Any, List
 
 from rag_student import create_student_rag_by_doc_id
@@ -9,6 +10,14 @@ from services.hero_service import HeroService
 
 
 class DialogueService:
+    @staticmethod
+    def _clean_text(text: str) -> str:
+        if not text:
+            return ""
+        cleaned = re.sub(r"[`*_>#-]", "", str(text))
+        cleaned = re.sub(r"\n{3,}", "\n\n", cleaned).strip()
+        return cleaned
+
     def __init__(self, project_root: Path):
         self.project_root = Path(project_root)
         self.session_store = SessionStore(project_root)
@@ -54,13 +63,15 @@ class DialogueService:
         hero_meta = self.hero_service.get_hero(hero_doc_id)
         hero_name = hero_meta["name"]
 
-        student_question = student_rag.generate_opening_question(hero_name=hero_name)
-        hero_answer = hero_rag.ask(student_question, agent_role="hero")
+        student_question = self._clean_text(student_rag.generate_opening_question(hero_name=hero_name))
+        hero_answer = self._clean_text(hero_rag.ask(student_question, agent_role="hero"))
         student_profile = student_rag.build_profile_summary()
-        teacher_summary = teacher_rag.teacher_summary(
-            student_profile=student_profile,
-            student_question=student_question,
-            hero_answer=hero_answer
+        teacher_summary = self._clean_text(
+            teacher_rag.teacher_summary(
+                student_profile=student_profile,
+                student_question=student_question,
+                hero_answer=hero_answer
+            )
         )
 
         round_data = {
@@ -84,7 +95,7 @@ class DialogueService:
         hero_name_list = [self.hero_service.get_hero(x)["name"] for x in hero_doc_ids]
         hero_names_text = "、".join(hero_name_list)
 
-        student_question = student_rag.generate_opening_question(hero_name=hero_names_text)
+        student_question = self._clean_text(student_rag.generate_opening_question(hero_name=hero_names_text))
 
         hero_rounds = []
         for hero_doc_id in hero_doc_ids:
@@ -94,11 +105,13 @@ class DialogueService:
             hero_rag = create_hero_rag_by_doc_id(hero_doc_id)
             teacher_rag = create_hero_rag_by_doc_id(hero_doc_id)
 
-            hero_answer = hero_rag.ask(student_question, agent_role="hero")
-            teacher_summary = teacher_rag.teacher_summary(
-                student_profile=student_profile,
-                student_question=student_question,
-                hero_answer=hero_answer
+            hero_answer = self._clean_text(hero_rag.ask(student_question, agent_role="hero"))
+            teacher_summary = self._clean_text(
+                teacher_rag.teacher_summary(
+                    student_profile=student_profile,
+                    student_question=student_question,
+                    hero_answer=hero_answer
+                )
             )
 
             hero_rounds.append({

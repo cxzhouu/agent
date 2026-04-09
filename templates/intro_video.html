@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <section class="card p-6 md:p-8">
+        <h1 class="page-title mb-2">功能1：播放定制短视频《初心·公管序章》</h1>
+        <p class="muted mb-4">请将视频文件放在 <code>static/videos/chuxin_gongguan_xuzhang.mp4</code>，页面会自动播放。</p>
+
+        <video class="w-full rounded-xl border" controls autoplay preload="metadata">
+            <source src="{{ url_for('static', filename='videos/chuxin_gongguan_xuzhang.mp4') }}" type="video/mp4">
+            当前浏览器不支持视频播放，请检查视频文件或浏览器设置。
+        </video>
+    </section>
+{% endblock %}
